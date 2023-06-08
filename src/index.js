@@ -15,7 +15,7 @@ process.setUncaughtExceptionCaptureCallback((err) => {
 });
 
 const client = new Client({
-  intents: [GatewayIntentBits.DirectMessages, GatewayIntentBits.Guilds, GatewayIntentBits.GuildMessages]
+  intents: [GatewayIntentBits.DirectMessages, GatewayIntentBits.Guilds, GatewayIntentBits.GuildMessages, GatewayIntentBits.MessageContent]
 });
 const rest = new REST({ version: '10' }).setToken(process.env.DISCORD_TOKEN ?? token);
 
@@ -26,6 +26,7 @@ client.events = new Collection();
 client.logger = logger;
 client.config = config;
 client.utils = utils;
+client.database = utils.database;
 // Commands
 const commands = [];
 const foldersPath = path.join(__dirname, 'commands');
@@ -37,6 +38,13 @@ for (const folder of commandFolders) {
   for (const file of commandFiles) {
     const filePath = path.join(commandsPath, file);
     const command = require(filePath);
+
+    // if the file has a _ in front of it, its disabled and should not be loaded
+    if (file.startsWith('_')) {
+      logger.warning(`The command at ${filePath} is disabled and will not be loaded.`);
+      continue;
+    }
+
     if ('data' in command && 'execute' in command) {
       client.commands.set(command.data.name, command);
       client.commandsLocationMapping.set(command.data.name, folder);

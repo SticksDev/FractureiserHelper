@@ -12,7 +12,7 @@ module.exports = {
     const embed = new EmbedBuilder()
       .setTitle('About FractureiserHelper')
       .setDescription(
-        'Below is some information about FractureiserHelper.\nThis bot was created by sticks#2701.'
+        'Below is some information about FractureiserHelper.\nThis bot was created by sticks#2701 and is FOSS [here](https://github.com/SticksDev/FractureiserHelper)'
       )
       .addFields(
         {

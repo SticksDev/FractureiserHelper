@@ -7,10 +7,16 @@ module.exports = {
    * @returns {Promise<void>}
    */
   async execute(interaction) {
-    if (!interaction.isChatInputCommand()) return;
     const command = interaction.client.commands.get(interaction.commandName);
-
     if (!command) interaction.client.logger.warning(`Command ${interaction.commandName} not found.`);
+
+    if (interaction.isAutocomplete()) {
+      // Check if the command has an autocomplete function
+      if (!command.autocomplete) return;
+      command.autocomplete(interaction);
+    }
+
+    if (!interaction.isChatInputCommand()) return;
 
     try {
       command.execute(interaction);
