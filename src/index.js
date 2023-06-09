@@ -1,7 +1,7 @@
 // Requires
 require('dotenv/config');
 
-const { Client, Collection, Events, GatewayIntentBits, REST, Routes } = require('discord.js');
+const { Client, Collection, GatewayIntentBits, REST } = require('discord.js');
 const config = require('../config.json');
 const path = require('node:path');
 const logger = require('logger');
@@ -73,20 +73,6 @@ for (const file of eventFiles) {
     logger.info(`Loaded event ${event.name}`);
   }
 }
-
-// Register commands
-(async () => {
-  try {
-    logger.info('Started refreshing application (/) commands.');
-
-    await rest.put(Routes.applicationGuildCommands(clientId, guildId), { body: commands });
-
-    logger.info('Successfully reloaded application (/) commands.');
-  } catch (error) {
-    logger.warning('Failed to reload application (/) commands.');
-    logger.warning(error);
-  }
-})();
 
 // Login
 client.login(process.env.DISCORD_TOKEN ?? token);
