@@ -12,7 +12,8 @@ module.exports = {
     if (message.channel.type === ChannelType.DM) return;
     if (!config.watchedChannels.includes(message.channel.id)) return;
 
-    const isPossiblyQuestion = await message.client.database.findLikeQuestionOrAnswer(message.content);
+    const lowerMessage = message.content.toLowerCase();
+    const isPossiblyQuestion = await message.client.database.findLikeQuestionOrAnswer(lowerMessage);
 
     if (!isPossiblyQuestion || isPossiblyQuestion.length === 0) {
       return;
@@ -36,17 +37,18 @@ module.exports = {
 
     // Loop through the questions
     for (const question of isPossiblyQuestion) {
-      const contentLower = message.content.toLowerCase();
-
-      if (question.pattern && contentLower.match(question.pattern)) {
-        sendQuestion(question);
-        break;
+      if (question.pattern) {
+        const regexObj = message.client.utils.regexStrToRegex(question.pattern);
+        if (regexObj.test(lowerMessage)) {
+          sendQuestion(question);
+          break;
+        }
       }
 
       if (question.containsPattern) {
         const keywords = question.containsPattern.split(',');
 
-        if (keywords.some((keyword) => contentLower.includes(keyword))) {
+        if (keywords.some((keyword) => lowerMessage.includes(keyword))) {
           sendQuestion(question);
           break;
         }
