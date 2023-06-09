@@ -1,0 +1,21 @@
+{
+    "ownerId": "",
+    "clientId": "",
+    "guildId": "",
+    "channels": {
+      "trusted": ""
+    },
+    "roles":{
+      "trusted": "",
+      "mod": "",
+      "admin": ""
+    },
+    "emotes": {
+      "success": "",
+      "error": "",
+      "loading": "",
+      "info": "",
+      "warning": ""
+    },
+    "watchedChannels": [""]
+  }

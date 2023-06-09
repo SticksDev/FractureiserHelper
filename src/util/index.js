@@ -28,8 +28,14 @@ function transformQuestion(question) {
   return question;
 }
 
+function regexStrToRegex(regexStr) {
+  const m = regexStr.match(/^([/~@;%#'])(.*?)\1([gimsuy]*)$/);
+  return new RegExp(m[2],m[3]);
+}
+
 module.exports.genRandomId = genRandomId;
 module.exports.isValidRegex = isValidRegex;
 module.exports.getThreadById = getThreadById;
 module.exports.transformQuestion = transformQuestion;
+module.exports.regexStrToRegex = regexStrToRegex;
 module.exports.database = require('./database');
