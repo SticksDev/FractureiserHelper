@@ -1,7 +1,7 @@
 // Requires
 require('dotenv/config');
 
-const { Client, Collection, GatewayIntentBits, REST } = require('discord.js');
+const { Client, Collection, GatewayIntentBits, REST, Routes} = require('discord.js');
 const config = require('../config.json');
 const path = require('node:path');
 const logger = require('logger');
@@ -15,7 +15,12 @@ process.setUncaughtExceptionCaptureCallback((err) => {
 });
 
 const client = new Client({
-  intents: [GatewayIntentBits.DirectMessages, GatewayIntentBits.Guilds, GatewayIntentBits.GuildMessages, GatewayIntentBits.MessageContent]
+  intents: [
+    GatewayIntentBits.DirectMessages,
+    GatewayIntentBits.Guilds,
+    GatewayIntentBits.GuildMessages,
+    GatewayIntentBits.MessageContent
+  ]
 });
 const rest = new REST({ version: '10' }).setToken(process.env.DISCORD_TOKEN ?? token);
 
@@ -55,6 +60,19 @@ for (const folder of commandFolders) {
     }
   }
 }
+
+(async () => {
+  try {
+    logger.info('Started refreshing application (/) commands.');
+
+    await rest.put(Routes.applicationGuildCommands(clientId, guildId), { body: commands });
+
+    logger.info('Successfully reloaded application (/) commands.');
+  } catch (error) {
+    logger.warning('Failed to reload application (/) commands.');
+    logger.warning(error);
+  }
+})();
 
 // Events
 const eventsPath = path.join(__dirname, 'events');
