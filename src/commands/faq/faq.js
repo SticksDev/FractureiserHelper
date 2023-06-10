@@ -114,7 +114,9 @@ module.exports = {
           .setDescription(`${transformedMessage}`)
           .setColor('#00BFFF')
           .setFooter({
-            text: `FAQ ID: ${questionData.id} | Requested by ${interaction.user.tag}`,
+            text: `FAQ ID: ${questionData.id} | Requested by ${
+              interaction.user.discriminator === '0' ? interaction.user.username : interaction.user.tag
+            }`,
             iconURL: interaction.user.displayAvatarURL({ dynamic: true })
           });
 

@@ -26,6 +26,7 @@ const rest = new REST({ version: '10' }).setToken(process.env.DISCORD_TOKEN ?? t
 
 // Client variables
 client.commands = new Collection();
+client.contextMenus = new Collection();
 client.commandsLocationMapping = new Collection();
 client.events = new Collection();
 client.logger = logger;
@@ -58,6 +59,29 @@ for (const folder of commandFolders) {
     } else {
       logger.warning(`The command at ${filePath} is missing a required "data" or "execute" property.`);
     }
+  }
+}
+
+
+// Context Menus
+const contextMenuPath = path.join(__dirname, 'commands', 'contextmenus');
+const contextMenuFiles = fs.readdirSync(contextMenuPath).filter((file) => file.endsWith('.js'));
+
+for (const file of contextMenuFiles) {
+  const filePath = path.join(contextMenuPath, file);
+  const contextMenu = require(filePath);
+
+  // if the file has a _ in front of it, its disabled and should not be loaded
+  if (file.startsWith('_')) {
+    logger.warning(`The context menu at ${filePath} is disabled and will not be loaded.`);
+    continue;
+  }
+
+  if ('data' in contextMenu && 'execute' in contextMenu) {
+    client.contextMenus.set(contextMenu.data.name, contextMenu);
+    logger.info(`Loaded context menu ${contextMenu.data.name}`);
+  } else {
+    logger.warning(`The context menu at ${filePath} is missing a required "data" or "execute" property.`);
   }
 }
 
